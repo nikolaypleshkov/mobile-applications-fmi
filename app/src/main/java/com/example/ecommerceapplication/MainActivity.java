@@ -9,14 +9,20 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity {
     Button signUpBtn, signInBtn;
     TextView textSlogan;
 
+    private FirebaseAuth firebaseAuth;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        firebaseAuth = FirebaseAuth.getInstance();
 
 
         signUpBtn = (Button) findViewById(R.id.btnSignUp);
