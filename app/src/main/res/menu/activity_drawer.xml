@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <item
+            android:id="@+id/nav_menu_item"
+            android:title="Menu"
+            />
+        <item
+            android:id="@+id/cart_item"
+            android:title="Cart"
+            />
+        <item
+            android:id="@+id/orders_item"
+            android:title="Orders"
+            />
+        <item
+            android:id="@+id/logout_item"
+            android:title="Logout"
+            />
+    </group>
+</menu>
