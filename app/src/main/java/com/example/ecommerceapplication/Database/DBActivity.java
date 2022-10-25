@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import com.example.ecommerceapplication.Entity.Order;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +17,13 @@ public class DBActivity extends SQLiteAssetHelper {
     private static final String DBName = "CommerceDB.db";
     private static int version = 1;
 
+    private SQLiteDatabase database;
+
     public DBActivity(Context context){
         super(context, DBName, null, version);
+        database = context.openOrCreateDatabase(DBName, Context.MODE_PRIVATE, null, null);
     }
+
 
     @SuppressLint("Range")
     public List<Order> GetCarts(){

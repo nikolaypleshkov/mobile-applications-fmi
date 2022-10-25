@@ -4,7 +4,10 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import com.example.ecommerceapplication.Database.DBActivity;
+import com.example.ecommerceapplication.Entity.CurrentUser;
 import com.example.ecommerceapplication.Entity.Order;
+import com.example.ecommerceapplication.Entity.SubmitedOrder;
 import com.example.ecommerceapplication.Holder.CartAdapter;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -29,8 +32,10 @@ import com.example.ecommerceapplication.databinding.ActivityCartBinding;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CartActivity extends AppCompatActivity {
     RecyclerView recyclerView;
@@ -75,9 +80,17 @@ public class CartActivity extends AppCompatActivity {
             editAddress.setLayoutParams(layoutParams);
             alertDialog.setPositiveButton("Yes", (dialogInterface, i) -> {
                 //TODO: submit order
+                SubmitedOrder submitedOrder = new SubmitedOrder(
+                        CurrentUser.currentUser.getName(),
+                        CurrentUser.currentUser.getPhone(),
+                        editAddress.getText().toString(),
+                        editTotalPrice.getText().toString(),
+                        cart
+                );
                 //TODO: Submit order to Firebase Database
+                cartReference.child(String.valueOf(System.currentTimeMillis())).setValue(submitedOrder);
                 //TODO: Clear the cart
-
+                new DBActivity(getBaseContext()).ClearCart();
                 Toast.makeText(CartActivity.this, "Thank You, Order Placed Successfully!", Toast.LENGTH_LONG).show();
                 finish();
             });
@@ -85,6 +98,21 @@ public class CartActivity extends AppCompatActivity {
             alertDialog.setNegativeButton("NO", (dialogInterface, i) -> dialogInterface.dismiss());
             alertDialog.show();
         });
+
+        //TODO: load order items
+        cartReference = (DatabaseReference) new DBActivity(this).GetCarts();
+        adapter = new CartAdapter(cart, this);
+
+        recyclerView.setAdapter(adapter);
+
+        int total = 0;
+        for(Order order: cart){
+            total += (Integer.parseInt(order.getPrice())) * (Integer.parseInt(order.getQuantity()));
+            Locale usLocale = new Locale("en", "US");
+            NumberFormat numberFormat = NumberFormat.getNumberInstance(usLocale);
+            editTotalPrice.setText(numberFormat.format(total));
+        }
+
 
     }
 }
