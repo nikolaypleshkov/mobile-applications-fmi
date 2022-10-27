@@ -29,4 +29,8 @@
     <string name="total">Total:</string>
     <string name="title_activity_item_list">ItemList</string>
     <string name="title_activity_item_details">ItemDetails</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
 </resources>

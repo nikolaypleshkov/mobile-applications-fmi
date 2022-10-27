@@ -3,7 +3,6 @@ package com.example.ecommerceapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.MenuView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,7 +13,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 
@@ -25,11 +23,10 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
     private FirebaseAuth firebaseAuth;
 
     private FirebaseDatabase firebaseDatabase;
@@ -81,13 +78,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new FirebaseRecyclerAdapter<Category, MenuHolder>(Category.class, R.layout.menu_item, MenuView.class, categoryReference) {
+        loadMenu();
+    }
 
-            @NonNull
-            @Override
-            public MenuHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                return null;
-            }
+    private void  loadMenu(){
+        adapter = new FirebaseRecyclerAdapter<Category, MenuHolder>(Category.class, R.layout.menu_item, MenuHolder.class, categoryReference) {
 
             @Override
             protected void onBindViewHolder(@NonNull MenuHolder holder, @SuppressLint("RecyclerView") int position, @NonNull Category model) {
@@ -105,15 +100,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
             }
+
+            @NonNull
+            @Override
+            public MenuHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                return null;
+            }
         };
         recyclerView.setAdapter(adapter);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
     }
 
     @Override
