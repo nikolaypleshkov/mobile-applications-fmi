@@ -4,6 +4,7 @@ public class Item {
     String Name;
     String Image;
     String Description;
+    String Quantity;
     String Price;
     String MenuId;
 

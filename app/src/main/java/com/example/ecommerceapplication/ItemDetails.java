@@ -1,51 +1,95 @@
 package com.example.ecommerceapplication;
 
 import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.View;
-
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import com.example.ecommerceapplication.databinding.ActivityItemDetailsBinding;
+import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
+import com.example.ecommerceapplication.Database.DBActivity;
+import com.example.ecommerceapplication.Entity.Item;
+import com.example.ecommerceapplication.Entity.Order;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class ItemDetails extends AppCompatActivity {
 
-    private AppBarConfiguration appBarConfiguration;
-    private ActivityItemDetailsBinding binding;
+    TextView itemName, itemPrice, itemDescription;
+    ImageView itemImage;
+
+    CollapsingToolbarLayout collapsingToolbarLayout;
+
+    FloatingActionButton cartBtn;
+
+    ElegantNumberButton numberPicker;
+
+    String itemId = "";
+
+    FirebaseDatabase database;
+    DatabaseReference itemReference;
+
+    Item currentItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_item_details);
 
-        binding = ActivityItemDetailsBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        database = FirebaseDatabase.getInstance();
+        itemReference = database.getReference("Items");
 
-        setSupportActionBar(binding.toolbar);
+        numberPicker = findViewById(R.id.number_button);
+        cartBtn = findViewById(R.id.btnCart);
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_item_details);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
+        cartBtn.setOnClickListener(view -> {
+            new DBActivity(getBaseContext()).SaveToCart(new Order(
+                    itemId,
+                    currentItem.getName(),
+                    numberPicker.getNumber(),
+                    currentItem.getPrice()
+            ));
+            Toast.makeText(ItemDetails.this, "Added to Cart", Toast.LENGTH_LONG).show();
         });
-    }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_item_details);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
+        collapsingToolbarLayout = findViewById(R.id.collapsing);
+        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
+        collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
+
+        itemDescription = findViewById(R.id.item_description);
+        itemPrice = findViewById(R.id.item_price);
+        itemName = findViewById(R.id.itemName);
+        itemImage = findViewById(R.id.itemImage);
+
+        if (getIntent() != null){
+            itemId = getIntent().getStringExtra("ItemId");
+        }
+        if (!itemId.isEmpty()){
+            itemReference.child(itemId).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    currentItem = snapshot.getValue(Item.class);
+
+                    //TODO: set image
+
+                    collapsingToolbarLayout.setTitle(currentItem.getName());
+
+                    itemName.setText(currentItem.getName());
+                    itemPrice.setText(currentItem.getPrice());
+                    itemDescription.setText(currentItem.getDescription());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
     }
 }
