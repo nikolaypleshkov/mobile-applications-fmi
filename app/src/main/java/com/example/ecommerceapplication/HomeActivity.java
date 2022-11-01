@@ -3,6 +3,7 @@ package com.example.ecommerceapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,10 +12,13 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.ecommerceapplication.Entity.Category;
@@ -52,12 +56,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Menu");
         //TODO: why is crashing :D?
-//        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        categoryReference = firebaseDatabase.getReference("category");
+        firebaseDatabase = FirebaseDatabase.getInstance("https://ecommerce-30ed3-default-rtdb.europe-west1.firebasedatabase.app");
+
+        categoryReference = firebaseDatabase.getReference("Category");
         firebaseAuth = FirebaseAuth.getInstance();
-        query = FirebaseDatabase.getInstance().getReference("Category");
+        query = FirebaseDatabase.getInstance("https://ecommerce-30ed3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Category");
+
         options = new FirebaseRecyclerOptions.Builder<Category>().setQuery(query, Category.class).build();
 
         FloatingActionButton floatingActionButton = findViewById(R.id.floatingBtn);
@@ -95,32 +101,53 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             protected void onBindViewHolder(@NonNull MenuHolder holder, @SuppressLint("RecyclerView") int position, @NonNull Category model) {
                 holder.textView.setText(model.getName());
 
-                final Category clickitem = model;
+                holder.setItemClickListener((view, pos, isLong) -> {
+                    Intent itemList = new Intent(HomeActivity.this, ItemList.class);
+                    itemList.putExtra("CategoryId", adapter.getRef(position).getKey());
 
-                holder.setItemClickListener(new ItemClickListener() {
-                    @Override
-                    public void onClick(View view, int pos, boolean isLong) {
-                        Intent itemList = new Intent(HomeActivity.this, ItemList.class);
-                        itemList.putExtra("CategoryId", adapter.getRef(position).getKey());
-
-                        startActivity(itemList);
-                    }
+                    startActivity(itemList);
                 });
             }
 
             @NonNull
             @Override
             public MenuHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.menu_item, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.menu_item, parent);
 
                 return new MenuHolder(view);
             }
+
         };
         recyclerView.setAdapter(adapter);
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        int id = item.getItemId();
+
+        switch (id){
+            case (R.id.cart_item): {
+                Intent cartIntent = new Intent(HomeActivity.this, CartActivity.class);
+                startActivity(cartIntent);
+                break;
+            }
+            case (R.id.orders_item): {
+                Intent orderIntent = new Intent(HomeActivity.this, OrderActivity.class);
+                startActivity(orderIntent);
+                break;
+            }
+            case (R.id.logout_item): {
+                firebaseAuth.signOut();
+                Intent mainIntent = new Intent(HomeActivity.this, MainActivity.class);
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(mainIntent);
+                break;
+            }
+        }
+
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout.closeDrawer(GravityCompat.START);
+
+        return true;
     }
 }
