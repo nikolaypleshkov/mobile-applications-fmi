@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -44,15 +45,15 @@ public class ItemList extends AppCompatActivity {
     FirebaseRecyclerAdapter<Item, ItemHolder> adapter;
     Query query;
     FirebaseRecyclerOptions<Item> options;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
 
-        database = FirebaseDatabase.getInstance();
         itemList = database.getReference("Items");
 
-        query = FirebaseDatabase.getInstance().getReference("Items").orderByChild("MenuId");
+        query = FirebaseDatabase.getInstance("https://ecommerce-30ed3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Items").orderByChild("MenuId");
         options = new FirebaseRecyclerOptions.Builder<Item>().setQuery(query, Item.class).build();
 
         recyclerView = findViewById(R.id.recyler_item);
@@ -69,17 +70,12 @@ public class ItemList extends AppCompatActivity {
             ) {
                 @Override
                 protected void onBindViewHolder(@NonNull ItemHolder holder, @SuppressLint("RecyclerView") int position, @NonNull Item model) {
-                    holder.itemName.setText(model.getName());
+                    holder.itemName.setText(model.getName());;
+                    holder.setItemClickListener((view, pos, isLong) -> {
+                        Intent itemDetails = new Intent(ItemList.this, ItemDetails.class);
 
-                    final Item local = model;
-                    holder.setItemClickListener(new ItemClickListener() {
-                        @Override
-                        public void onClick(View view, int pos, boolean isLong) {
-                            Intent itemDetails = new Intent(ItemList.this, ItemDetails.class);
-
-                            itemDetails.putExtra("ItemId", adapter.getRef(position).getKey());
-                            startActivity(itemDetails);
-                        }
+                        itemDetails.putExtra("ItemId", adapter.getRef(position).getKey());
+                        startActivity(itemDetails);
                     });
                 }
                 @NonNull
