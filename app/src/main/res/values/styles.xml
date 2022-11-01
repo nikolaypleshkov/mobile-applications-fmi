@@ -7,7 +7,16 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
     <style name="ExpandedAppBar" parent="@android:style/TextAppearance.Material.Title">
         <item name="android:textColor">@android:color/transparent</item>
         <item name="android:textStyle">normal</item>
-    </style></resources>
+    </style>
+</resources>
