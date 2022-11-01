@@ -34,6 +34,7 @@ public class DBActivity extends SQLiteAssetHelper {
         String SQLTable = "OrderInfo";
 
         QueryBuilder.setTables(SQLTable);
+
         Cursor cursor = QueryBuilder.query(Database, SQLSelect, null, null, null, null, null);
 
         final List<Order> result = new ArrayList<>();
