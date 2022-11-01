@@ -3,11 +3,11 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
-
+        jcenter();
     }
     dependencies {
         classpath 'com.google.gms:google-services:4.3.14'
+        classpath 'com.cepheuen.elegant-number-button:lib:1.0.2'
     }
 }
 
@@ -21,6 +21,6 @@ allprojects {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
-        jcenter()
+        jcenter();
     }
 }
