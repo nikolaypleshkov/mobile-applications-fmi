@@ -54,7 +54,7 @@ public class CartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
-        database = FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance("https://ecommerce-30ed3-default-rtdb.europe-west1.firebasedatabase.app/");
         cartReference = database.getReference("Orders");
 
 
