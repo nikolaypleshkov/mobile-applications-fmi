@@ -92,7 +92,7 @@ public class CartActivity extends AppCompatActivity {
         });
 
         //TODO: load order items
-        cartReference = (DatabaseReference) new DBActivity(this).GetCarts();
+        cart = new DBActivity(this).GetCarts();
         adapter = new CartAdapter(cart, this);
 
         recyclerView.setAdapter(adapter);
@@ -104,6 +104,7 @@ public class CartActivity extends AppCompatActivity {
             NumberFormat numberFormat = NumberFormat.getNumberInstance(usLocale);
             editTotalPrice.setText(numberFormat.format(total));
         }
+
 
 
     }
