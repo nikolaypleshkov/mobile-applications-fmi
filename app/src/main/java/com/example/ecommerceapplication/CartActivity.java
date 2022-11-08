@@ -1,7 +1,5 @@
 package com.example.ecommerceapplication;
 
-import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import com.example.ecommerceapplication.Database.DBActivity;
@@ -9,7 +7,6 @@ import com.example.ecommerceapplication.Entity.CurrentUser;
 import com.example.ecommerceapplication.Entity.Order;
 import com.example.ecommerceapplication.Entity.SubmitedOrder;
 import com.example.ecommerceapplication.Holder.CartAdapter;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,14 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommerceapplication.databinding.ActivityCartBinding;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
