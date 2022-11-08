@@ -17,13 +17,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.ecommerceapplication.Entity.Category;
 import com.example.ecommerceapplication.Holder.MenuHolder;
-import com.example.ecommerceapplication.Listener.ItemClickListener;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -42,6 +40,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     TextView userDisplayName;
 
     RecyclerView recyclerView;
+    RecyclerView recyclerMenu;
+
     RecyclerView.LayoutManager layoutManager;
 
     FirebaseRecyclerAdapter<Category, MenuHolder> adapter;
@@ -55,7 +55,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Menu");
-        //TODO: why is crashing :D?
         setSupportActionBar(toolbar);
 
         firebaseDatabase = FirebaseDatabase.getInstance("https://ecommerce-30ed3-default-rtdb.europe-west1.firebasedatabase.app");
@@ -85,6 +84,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         View navbarView = navigationView.getHeaderView(0);
         userDisplayName = navbarView.findViewById(R.id.userDisplayName);
+        userDisplayName.setText("Nikolay Pleshkov");
 
         recyclerView = findViewById(R.id.recycler_menu);
         recyclerView.setHasFixedSize(true);
@@ -112,13 +112,26 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @NonNull
             @Override
             public MenuHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.menu_item, parent);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.menu_item, parent, false);
 
                 return new MenuHolder(view);
             }
 
+
         };
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
