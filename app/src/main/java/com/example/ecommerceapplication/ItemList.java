@@ -1,93 +1,82 @@
 package com.example.ecommerceapplication;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.os.Bundle;
-
-import com.example.ecommerceapplication.Entity.Category;
-import com.example.ecommerceapplication.Entity.Item;
-import com.example.ecommerceapplication.Holder.ItemHolder;
-import com.example.ecommerceapplication.Listener.ItemClickListener;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommerceapplication.databinding.ActivityItemListBinding;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.widget.Toast;
+
+import com.example.ecommerceapplication.data.model.Item;
+import com.example.ecommerceapplication.holder.CategoryAdapter;
+import com.example.ecommerceapplication.holder.ItemAdapter;
+import com.example.ecommerceapplication.ui.HomeActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemList extends AppCompatActivity {
-
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
 
-    FirebaseDatabase database;
-    DatabaseReference itemList;
+    FirebaseFirestore db;
+
+    ArrayList<Item> items;
 
     String categoryId;
 
-    FirebaseRecyclerAdapter<Item, ItemHolder> adapter;
-    Query query;
-    FirebaseRecyclerOptions<Item> options;
+    ItemAdapter itemAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
 
-        itemList = database.getReference("Items");
+        db = FirebaseFirestore.getInstance();
 
-        query = FirebaseDatabase.getInstance("https://ecommerce-30ed3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Items").orderByChild("MenuId");
-        options = new FirebaseRecyclerOptions.Builder<Item>().setQuery(query, Item.class).build();
+        items = new ArrayList<>();
+        itemAdapter = new ItemAdapter(items,this, null);
 
-        recyclerView = findViewById(R.id.recyler_item);
+
+        recyclerView = findViewById(R.id.recycler_item);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
         if(getIntent() != null){
             categoryId = getIntent().getStringExtra("CategoryId");
+        } if(!categoryId.isEmpty() && categoryId != null){
+            loadItemList(categoryId);
         }
-        if(!categoryId.isEmpty() && categoryId != null){
-            adapter =  new FirebaseRecyclerAdapter<Item, ItemHolder>(
-                    options
-            ) {
-                @Override
-                protected void onBindViewHolder(@NonNull ItemHolder holder, @SuppressLint("RecyclerView") int position, @NonNull Item model) {
-                    holder.itemName.setText(model.getName());;
-                    holder.setItemClickListener((view, pos, isLong) -> {
-                        Intent itemDetails = new Intent(ItemList.this, ItemDetails.class);
 
-                        itemDetails.putExtra("ItemId", adapter.getRef(position).getKey());
-                        startActivity(itemDetails);
-                    });
-                }
-                @NonNull
-                @Override
-                public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
+    }
 
-                    return new ItemHolder(view);
+    @SuppressLint("NotifyDataSetChanged")
+    private void loadItemList(String categoryId){
+        db.collection("item").whereEqualTo("menuID", categoryId).get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                List<DocumentSnapshot> itemList = task.getResult().getDocuments();
+
+                for(DocumentSnapshot documentSnapshot : itemList){
+                    Item item = documentSnapshot.toObject(Item.class);
+
+                    items.add(item);
                 }
 
-            };
-            recyclerView.setAdapter(adapter);
-        }
+                recyclerView.setAdapter(new ItemAdapter(items, this, item -> {
+                    Toast.makeText(ItemList.this, "Item details for: " + item.getName(), Toast.LENGTH_SHORT).show();
+
+                }));
+
+                itemAdapter.notifyDataSetChanged();
+
+
+            } else {
+                Toast.makeText(ItemList.this, "No data found in Database", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(e -> Toast.makeText(ItemList.this, "Fail to get the data.", Toast.LENGTH_SHORT).show());
     }
 }
