@@ -10,7 +10,7 @@
         android:orientation="vertical"
         android:layout_centerInParent="true">
         <ImageView
-            android:src="@drawable/commerce_logo"
+            android:src="@drawable/rammstein_logo"
             android:layout_width="250dp"
             android:layout_height="200dp" />
         <TextView

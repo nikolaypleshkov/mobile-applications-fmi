@@ -8,42 +8,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
-    <androidx.coordinatorlayout.widget.CoordinatorLayout android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                app:titleTextColor="@color/white"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </com.google.android.material.appbar.AppBarLayout>
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:context="com.example.ecommerceapplication.HomeActivity"
-            tools:showIn="@layout/activity_home"
-            >
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_menu"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="vertical">
+    <include
+        layout="@layout/app_bar_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
-            </androidx.recyclerview.widget.RecyclerView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
-            android:backgroundTint="@android:color/white"
-            android:src="@drawable/shopping_cart"
-            android:contentDescription="TODO" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
@@ -52,6 +22,6 @@
         android:fitsSystemWindows="true"
         app:itemTextColor="@color/purple_500"
         app:itemIconTint="@color/purple_500"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/activity_drawer" />
+        app:headerLayout="@layout/nav_header_drawer"
+        app:menu="@menu/navigation_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>
