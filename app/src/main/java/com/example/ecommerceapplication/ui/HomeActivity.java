@@ -20,6 +20,7 @@ import com.example.ecommerceapplication.ItemList;
 import com.example.ecommerceapplication.R;
 import com.example.ecommerceapplication.data.model.Category;
 import com.example.ecommerceapplication.holder.CategoryAdapter;
+import com.example.ecommerceapplication.ui.cart.CartActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -58,8 +59,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         FloatingActionButton floatingActionButton = findViewById(R.id.floatingBtn);
 
         floatingActionButton.setOnClickListener(view -> {
-//            Intent cartActivity = new Intent(HomeActivity.this, CartActivity.class);
-//            startActivity(cartActivity);
+            Intent cartActivity = new Intent(HomeActivity.this, CartActivity.class);
+            startActivity(cartActivity);
         });
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
