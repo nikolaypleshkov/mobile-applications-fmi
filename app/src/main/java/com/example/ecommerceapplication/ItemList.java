@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -12,6 +13,7 @@ import com.example.ecommerceapplication.data.model.Item;
 import com.example.ecommerceapplication.holder.CategoryAdapter;
 import com.example.ecommerceapplication.holder.ItemAdapter;
 import com.example.ecommerceapplication.ui.HomeActivity;
+import com.example.ecommerceapplication.ui.details.ItemDetails;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -67,8 +69,10 @@ public class ItemList extends AppCompatActivity {
                 }
 
                 recyclerView.setAdapter(new ItemAdapter(items, this, item -> {
-                    Toast.makeText(ItemList.this, "Item details for: " + item.getName(), Toast.LENGTH_SHORT).show();
+                    Intent itemDetails = new Intent(ItemList.this, ItemDetails.class);
+                    itemDetails.putExtra("ItemId", item.getName());
 
+                    startActivity(itemDetails);
                 }));
 
                 itemAdapter.notifyDataSetChanged();
