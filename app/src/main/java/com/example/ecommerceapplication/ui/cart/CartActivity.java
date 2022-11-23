@@ -2,6 +2,7 @@ package com.example.ecommerceapplication.ui.cart;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.example.ecommerceapplication.R;
 import com.example.ecommerceapplication.data.model.Order;
 import com.example.ecommerceapplication.database.DBActivity;
+import com.example.ecommerceapplication.holder.CartAdapter;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.NumberFormat;
@@ -31,6 +33,8 @@ public class CartActivity extends AppCompatActivity {
 
     List<Order> cart = new ArrayList<>();
 
+    CartAdapter cartAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +43,7 @@ public class CartActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         recyclerView = findViewById(R.id.listCart);
+        layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
         txtTotalPrice = findViewById(R.id.total);
@@ -49,6 +54,7 @@ public class CartActivity extends AppCompatActivity {
         });
 
         //TODO: load cart items
+        loadCartItems();
     }
 
     private void showAlertDialog(){
@@ -57,7 +63,8 @@ public class CartActivity extends AppCompatActivity {
 
     private void loadCartItems(){
         cart = new DBActivity(this).getCartItems();
-        recyclerView.setAdapter(adapter);
+        cartAdapter = new CartAdapter((ArrayList<Order>) cart, this);
+        recyclerView.setAdapter(cartAdapter);
 
         int total = 0;
 
