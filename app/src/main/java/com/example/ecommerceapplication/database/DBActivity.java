@@ -48,7 +48,8 @@ public class DBActivity extends SQLiteAssetHelper {
     public void addItemToCart(Order order){
         SQLiteDatabase database = getReadableDatabase();
 
-        String query = String.format("INSERT INTO OrderInfo(Id, Name, Quantity, Price) VALUES ('%s','%s','%s','%s');",
+        String query = String.format("INSERT INTO OrderInfo(Id, Name, Quantity, Price) VALUES ('%s','%s','%s','%s')" +
+                        "ON CONFLICT(Id) DO UPDATE SET Quantity = Quantity + Quantity;",
                 order.getItemId(),
                 order.getItemName(),
                 order.getQuantity(),
