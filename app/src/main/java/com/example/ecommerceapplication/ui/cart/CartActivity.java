@@ -1,19 +1,28 @@
 package com.example.ecommerceapplication.ui.cart;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ecommerceapplication.R;
+import com.example.ecommerceapplication.common.CurrentAuthUser;
 import com.example.ecommerceapplication.data.model.Order;
+import com.example.ecommerceapplication.data.model.SubmitOrder;
 import com.example.ecommerceapplication.database.DBActivity;
 import com.example.ecommerceapplication.holder.CartAdapter;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.NumberFormat;
@@ -51,6 +60,7 @@ public class CartActivity extends AppCompatActivity {
 
         btnPlaceOrder.setOnClickListener(view -> {
             //TODO: show alert dialog
+            showAlertDialog();
         });
 
         //TODO: load cart items
@@ -59,6 +69,37 @@ public class CartActivity extends AppCompatActivity {
 
     private void showAlertDialog(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(CartActivity.this);
+        alertDialog.setTitle("One last step...");
+        alertDialog.setMessage("Enter delivery address: ");
+
+        final EditText txtEditAdress = new EditText(CartActivity.this);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        );
+        txtEditAdress.setLayoutParams(layoutParams);
+        alertDialog.setView(txtEditAdress);
+        alertDialog.setPositiveButton("Yes", (dialogInterface, i) -> {
+            SubmitOrder submitOrder = new SubmitOrder(
+                    CurrentAuthUser.customer.getName(),
+                    CurrentAuthUser.customer.getEmail(),
+                    txtEditAdress.getText().toString(),
+                    txtTotalPrice.getText().toString(),
+                    cart
+            );
+            //TODO: submit order to firebase
+            db.collection("submit_orders").add(submitOrder).addOnCompleteListener(task -> {
+                new DBActivity(getBaseContext()).clearCart();
+                Toast.makeText(CartActivity.this, "Thank you for your purchase!", Toast.LENGTH_SHORT).show();
+
+            }).addOnFailureListener(e -> Toast.makeText(CartActivity.this, "Submitting order failed! Please try again!", Toast.LENGTH_SHORT).show());
+
+            finish();
+
+        });
+        alertDialog.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+
+        alertDialog.show();
     }
 
     private void loadCartItems(){
