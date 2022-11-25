@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.example.ecommerceapplication.R;
 import com.example.ecommerceapplication.data.model.Category;
 import com.example.ecommerceapplication.data.model.Item;
@@ -48,7 +49,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder>{
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        public TextView txt_cart_name, txt_cart_price, txt_cart_count;
+        public TextView txt_cart_name, txt_cart_price;
+        public ElegantNumberButton txt_cart_count;
         public final View view;
 
         public ViewHolder(View view){
@@ -60,7 +62,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder>{
 
         }
         public void bind(final List<Order> orderDetails, int position){
-            txt_cart_count.setText(orderDetails.get(position).getQuantity());
+            txt_cart_count.setNumber(orderDetails.get(position).getQuantity());
             NumberFormat numberFormat = NumberFormat.getCurrencyInstance(Locale.GERMAN);
             int price = (Integer.parseInt(orderDetails.get(position).getPrice()))*(Integer.parseInt(orderDetails.get(position).getQuantity()));
             txt_cart_price.setText(numberFormat.format(price));
