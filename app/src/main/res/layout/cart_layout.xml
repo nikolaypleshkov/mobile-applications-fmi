@@ -40,11 +40,14 @@
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
-        <TextView
+        <com.cepheuen.elegantnumberbutton.view.ElegantNumberButton
             android:id="@+id/cart_item_count"
             android:layout_gravity="center_vertical|end"
             android:layout_marginRight="16dp"
-            android:layout_width="20dp"
-            android:layout_height="20dp" />
+            app:backGroundColor="@color/black"
+            android:layout_width="70dp"
+            android:layout_height="20dp">
+
+        </com.cepheuen.elegantnumberbutton.view.ElegantNumberButton>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
