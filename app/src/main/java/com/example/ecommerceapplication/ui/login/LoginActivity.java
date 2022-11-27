@@ -13,9 +13,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ecommerceapplication.R;
+import com.example.ecommerceapplication.common.CurrentAuthUser;
+import com.example.ecommerceapplication.data.model.Customer;
 import com.example.ecommerceapplication.ui.HomeActivity;
 import com.example.ecommerceapplication.ui.register.RegisterActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.Objects;
 
@@ -65,8 +70,19 @@ public class LoginActivity extends AppCompatActivity {
                         .addOnCompleteListener(
                                 task -> {
                                     if(task.isSuccessful()){
+                                        FirebaseUser firebaseUser = task.getResult().getUser();
+                                        if(firebaseUser != null){
+                                            Customer customer = new Customer(
+                                                    firebaseUser.getDisplayName(),
+                                                    firebaseUser.getEmail()
+                                            );
+                                            CurrentAuthUser.customer = customer;
+                                        }
+
                                         Toast.makeText(getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
                                         messageDialog.dismiss();
+
+
 
                                         Intent homeActivity = new Intent(LoginActivity.this, HomeActivity.class);
                                         startActivity(homeActivity);

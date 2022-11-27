@@ -4,25 +4,33 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ecommerceapplication.ItemList;
+import com.example.ecommerceapplication.ui.itemList.ItemList;
+import com.example.ecommerceapplication.MainActivity;
 import com.example.ecommerceapplication.R;
+import com.example.ecommerceapplication.common.CurrentAuthUser;
 import com.example.ecommerceapplication.data.model.Category;
 import com.example.ecommerceapplication.holder.CategoryAdapter;
 import com.example.ecommerceapplication.ui.cart.CartActivity;
+import com.example.ecommerceapplication.ui.orderStatus.OrderStatusActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -75,7 +83,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         View navbarView = navigationView.getHeaderView(0);
         txtFullName = navbarView.findViewById(R.id.txtFullName);
-        txtFullName.setText("Nikolay Pleshkov");
+        txtFullName.setText(CurrentAuthUser.customer.getName());
 
         recyclerView = findViewById(R.id.recycler_menu);
         recyclerView.setHasFixedSize(true);
@@ -83,7 +91,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setLayoutManager(layoutManager);
 
         loadMenu();
+        SMSPermission();
+    }
 
+    private void SMSPermission(){
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.SEND_SMS)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.SEND_SMS},
+                        0);
+            }
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -115,7 +137,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Toast.makeText(HomeActivity.this, "Item click", Toast.LENGTH_SHORT).show();
+        int id = item.getItemId();
+
+        if(id == R.id.nav_cart){
+            Intent cartIntent = new Intent(HomeActivity.this, CartActivity.class);
+            startActivity(cartIntent);
+        } else if(id == R.id.nav_orders){
+            Intent orderIntent = new Intent(HomeActivity.this,  OrderStatusActivity.class);
+            startActivity(orderIntent);
+        } else if(id == R.id.nav_log_out){
+            Intent mainIntent = new Intent(HomeActivity.this, MainActivity.class);
+
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(mainIntent);
+
+            FirebaseAuth.getInstance().signOut();
+        }
 
         return false;
     }

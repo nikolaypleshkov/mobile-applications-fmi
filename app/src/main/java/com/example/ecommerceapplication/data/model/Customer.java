@@ -6,6 +6,12 @@ public class Customer {
     private String Password;
 
     public Customer() { }
+
+    public Customer(String name, String email) {
+        Name = name;
+        Email = email;
+    }
+
     public Customer(String name, String email, String password) {
         Name = name;
         Email = email;

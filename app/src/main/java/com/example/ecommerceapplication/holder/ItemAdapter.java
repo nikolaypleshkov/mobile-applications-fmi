@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommerceapplication.R;
-import com.example.ecommerceapplication.data.model.Category;
 import com.example.ecommerceapplication.data.model.Item;
 import com.squareup.picasso.Picasso;
 

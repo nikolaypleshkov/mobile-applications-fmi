@@ -1,4 +1,4 @@
-package com.example.ecommerceapplication;
+package com.example.ecommerceapplication.ui.itemList;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,10 +9,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.example.ecommerceapplication.R;
 import com.example.ecommerceapplication.data.model.Item;
-import com.example.ecommerceapplication.holder.CategoryAdapter;
 import com.example.ecommerceapplication.holder.ItemAdapter;
-import com.example.ecommerceapplication.ui.HomeActivity;
 import com.example.ecommerceapplication.ui.details.ItemDetails;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;

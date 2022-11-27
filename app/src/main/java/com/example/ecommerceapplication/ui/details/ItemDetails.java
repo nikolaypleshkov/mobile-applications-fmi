@@ -51,7 +51,6 @@ public class ItemDetails extends AppCompatActivity {
         btnAddToCart = findViewById(R.id.btnAddToCart);
 
         btnAddToCart.setOnClickListener(view -> {
-            //TODO: add to local DB
             new DBActivity(getBaseContext()).addItemToCart(
                     new Order(
                             itemId,

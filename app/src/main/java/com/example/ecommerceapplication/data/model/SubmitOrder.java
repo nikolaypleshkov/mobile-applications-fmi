@@ -3,7 +3,7 @@ package com.example.ecommerceapplication.data.model;
 import java.util.List;
 
 public class SubmitOrder {
-    private String Name;
+    private String Number;
     private String Email;
     private String Address;
     private String Total;
@@ -13,21 +13,21 @@ public class SubmitOrder {
 
     public SubmitOrder() { }
 
-    public SubmitOrder(String name, String email, String address, String total, List<Order> items) {
-        Name = name;
+    public SubmitOrder(String number, String email, String status, String address, String total, List<Order> items) {
+        Number = number;
         Email = email;
         Address = address;
         Total = total;
-        Status = "0";
+        Status = status;
         this.items = items;
     }
 
-    public String getName() {
-        return Name;
+    public String getNumber() {
+        return Number;
     }
 
-    public void setName(String name) {
-        Name = name;
+    public void setNumber(String number) {
+        Number = number;
     }
 
     public String getEmail() {

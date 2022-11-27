@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.ecommerceapplication.R;
 import com.example.ecommerceapplication.ui.login.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import java.util.Objects;
 
@@ -55,11 +57,24 @@ public class RegisterActivity extends AppCompatActivity {
                 firebaseAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(task -> {
                             if(task.isSuccessful()){
-                                Toast.makeText(getApplicationContext(), "Sign up successful!", Toast.LENGTH_LONG).show();
-                                messageDialog.dismiss();
+                                FirebaseUser user = task.getResult().getUser();
 
-                                Intent signInActivity = new Intent(RegisterActivity.this, LoginActivity.class);
-                                startActivity(signInActivity);
+                                UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+
+                                assert user != null;
+                                user.updateProfile(profileChangeRequest).addOnCompleteListener(updateTask -> {
+                                   if(updateTask.isSuccessful()){
+                                       Toast.makeText(getApplicationContext(), "Sign up successful!", Toast.LENGTH_LONG).show();
+                                       messageDialog.dismiss();
+
+                                       Intent signInActivity = new Intent(RegisterActivity.this, LoginActivity.class);
+                                       startActivity(signInActivity);
+                                   } else {
+
+                                       Toast.makeText(getApplicationContext(), Objects.requireNonNull(updateTask.getException()).getMessage(), Toast.LENGTH_LONG).show();
+                                       messageDialog.dismiss();
+                                   }
+                                });
                             }
                             else{
                                 Toast.makeText(getApplicationContext(), Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();

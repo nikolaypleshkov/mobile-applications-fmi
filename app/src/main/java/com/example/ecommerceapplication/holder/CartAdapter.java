@@ -1,35 +1,39 @@
 package com.example.ecommerceapplication.holder;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.example.ecommerceapplication.R;
-import com.example.ecommerceapplication.data.model.Category;
 import com.example.ecommerceapplication.data.model.Item;
 import com.example.ecommerceapplication.data.model.Order;
-import com.squareup.picasso.Picasso;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder>{
+
+    public interface ItemClickListener {
+        void onClick(Order order);
+
+    }
 
     private final List<Order> orderArrayList;
     private Context context;
 
-    public CartAdapter(ArrayList<Order> orderArrayList, Context context) {
+    private CartAdapter.ItemClickListener itemClickListener;
+
+    public CartAdapter(ArrayList<Order> orderArrayList, Context context, ItemClickListener itemClickListener) {
         this.orderArrayList = orderArrayList;
         this.context = context;
+        this.itemClickListener = itemClickListener;
     }
 
     @NonNull
@@ -40,7 +44,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(orderArrayList, position);
+        holder.bind(orderArrayList, position,  itemClickListener);
     }
 
     @Override
@@ -50,7 +54,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder>{
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         public TextView txt_cart_name, txt_cart_price;
-        public ElegantNumberButton txt_cart_count;
+        public Button removeItem;
         public final View view;
 
         public ViewHolder(View view){
@@ -58,15 +62,15 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder>{
             this.view = view;
             txt_cart_name = view.findViewById(R.id.cart_item_name);
             txt_cart_price = view.findViewById(R.id.cart_item_price);
-            txt_cart_count = view.findViewById(R.id.cart_item_count);
+            removeItem = view.findViewById(R.id.removeItem);
 
         }
-        public void bind(final List<Order> orderDetails, int position){
-            txt_cart_count.setNumber(orderDetails.get(position).getQuantity());
-            NumberFormat numberFormat = NumberFormat.getCurrencyInstance(Locale.GERMAN);
+        @SuppressLint("SetTextI18n")
+        public void bind(final List<Order> orderDetails, int position, final CartAdapter.ItemClickListener listener){
             int price = (Integer.parseInt(orderDetails.get(position).getPrice()))*(Integer.parseInt(orderDetails.get(position).getQuantity()));
-            txt_cart_price.setText(numberFormat.format(price));
+            txt_cart_price.setText("€" + price);
             txt_cart_name.setText(orderDetails.get(position).getItemName());
+            removeItem.setOnClickListener(v -> listener.onClick(orderDetails.get(position)));
 
         }
 

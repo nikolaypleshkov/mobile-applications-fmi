@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.SubMenu;
@@ -29,6 +30,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 public class CartActivity extends AppCompatActivity {
 
@@ -80,9 +82,14 @@ public class CartActivity extends AppCompatActivity {
         txtEditAdress.setLayoutParams(layoutParams);
         alertDialog.setView(txtEditAdress);
         alertDialog.setPositiveButton("Yes", (dialogInterface, i) -> {
+            Random rnd = new Random();
+            int number = rnd.nextInt(99999999);
+            @SuppressLint("DefaultLocale") String OrderNumber =  String.format("%08d", number);
+
             SubmitOrder submitOrder = new SubmitOrder(
-                    CurrentAuthUser.customer.getName(),
+                    OrderNumber,
                     CurrentAuthUser.customer.getEmail(),
+                    "0",
                     txtEditAdress.getText().toString(),
                     txtTotalPrice.getText().toString(),
                     cart
@@ -104,14 +111,18 @@ public class CartActivity extends AppCompatActivity {
 
     private void loadCartItems(){
         cart = new DBActivity(this).getCartItems();
-        cartAdapter = new CartAdapter((ArrayList<Order>) cart, this);
+        cartAdapter = new CartAdapter((ArrayList<Order>) cart, this, order -> {
+            new DBActivity(getBaseContext()).removeItemFromCart(order.getItemName());
+            finish();
+            startActivity(getIntent());
+        });
         recyclerView.setAdapter(cartAdapter);
 
         int total = 0;
 
         for(Order order : cart){
             total += (Integer.parseInt(order.getPrice())) * (Integer.parseInt(order.getQuantity()));
-            NumberFormat numberFormat = NumberFormat.getCurrencyInstance(Locale.GERMAN);
+            NumberFormat numberFormat = NumberFormat.getCurrencyInstance(Locale.ITALY);
             txtTotalPrice.setText(numberFormat.format(total));
         }
     }
